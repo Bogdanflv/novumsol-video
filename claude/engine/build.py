@@ -28,6 +28,22 @@ def fail(msg):
     sys.exit(1)
 
 
+def trimmed(src, folder):
+    """Decupează marginile albe ale pozei oficiale (fără alte modificări) ca produsul să umple cardul."""
+    from PIL import Image, ImageChops
+    im = Image.open(src).convert('RGB')
+    diff = ImageChops.difference(im, Image.new('RGB', im.size, (255, 255, 255))).convert('L').point(lambda v: 255 if v > 18 else 0)
+    box = diff.getbbox()
+    if box:
+        pad = int(max(im.size) * 0.04)
+        box = (max(0, box[0] - pad), max(0, box[1] - pad), min(im.width, box[2] + pad), min(im.height, box[3] + pad))
+        im = im.crop(box)
+    out = os.path.join(folder, '_work', 'img_' + os.path.basename(src).rsplit('.', 1)[0] + '.jpg')
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    im.save(out, quality=92)
+    return 'file://' + out
+
+
 def load(folder):
     clip = json.load(open(os.path.join(folder, 'clip.json')))
     db = json.load(open(os.path.join(DATA, 'products.json')))
@@ -44,7 +60,7 @@ def load(folder):
         prods.append({
             'title': spec.get('title') or p['name'], 'maker': spec.get('maker', ''), 'line': spec.get('line', ''),
             'price': p['price'], 'regular_price': p['regular_price'], 'on_sale': p['on_sale'],
-            'image': 'file://' + os.path.join(DATA, p['image']), 'name': p['name'], 'url': p['url'],
+            'image': trimmed(os.path.join(DATA, p['image']), folder), 'name': p['name'], 'url': p['url'],
         })
     # verificare cuvinte interzise
     blob = json.dumps(clip, ensure_ascii=False).lower()

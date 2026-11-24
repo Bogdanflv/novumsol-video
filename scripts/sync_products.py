@@ -146,10 +146,10 @@ def main():
 
     logo = None
     try:
-        for i, url in enumerate(find_logo()):
+        for url in find_logo():
             try:
-                f = save_image(url, 'logo' if i == 0 else f'logo_alt{i}', manifest)
-                logo = logo or f
+                logo = save_image(url, 'logo', manifest)
+                break
             except Exception as e:
                 print('logo fail', url, e)
     except Exception as e:
