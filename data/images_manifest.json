@@ -1365,8 +1365,68 @@
   "file": "images/4223.jpg"
  },
  "logo": {
+  "key": "64e307e73710",
+  "src": "https://novumsol.ro/wp-content/uploads/2025/11/Novum-Sol-Logo-SVG.svg",
+  "file": "logo.svg"
+ },
+ "logo_alt1": {
+  "key": "0cf058ab63c2",
+  "src": "https://novumsol.ro/wp-content/uploads/2025/11/Novum-Sol-Logo-ALB-SVG.svg",
+  "file": "logo_alt1.svg"
+ },
+ "logo_alt2": {
+  "key": "595da6b6e297",
+  "src": "https://novumsol.ro/wp-content/uploads/2025/12/Adama-Logo.png",
+  "file": "logo_alt2.png"
+ },
+ "logo_alt3": {
+  "key": "1baceb9163a6",
+  "src": "https://novumsol.ro/wp-content/uploads/2026/03/Albaugh-Logo.png",
+  "file": "logo_alt3.png"
+ },
+ "logo_alt4": {
+  "key": "a58a732852cf",
+  "src": "https://novumsol.ro/wp-content/uploads/2025/12/BASF-Logo-2.png",
+  "file": "logo_alt4.png"
+ },
+ "logo_alt5": {
+  "key": "b759925a787e",
+  "src": "https://novumsol.ro/wp-content/uploads/2025/12/Bayer-Logo.png",
+  "file": "logo_alt5.png"
+ },
+ "logo_alt6": {
+  "key": "deabd3a5a715",
+  "src": "https://novumsol.ro/wp-content/uploads/2025/12/Corteva-Logo-2.png",
+  "file": "logo_alt6.png"
+ },
+ "logo_alt7": {
+  "key": "8b3d4a2a4a1a",
+  "src": "https://novumsol.ro/wp-content/uploads/2025/12/FMC-Logo-2.png",
+  "file": "logo_alt7.png"
+ },
+ "logo_alt8": {
+  "key": "15359fc15617",
+  "src": "https://novumsol.ro/wp-content/uploads/2026/03/Rovensa-Logo.png",
+  "file": "logo_alt8.png"
+ },
+ "logo_alt9": {
+  "key": "33dcaddb4e6d",
+  "src": "https://novumsol.ro/wp-content/uploads/2025/12/Syngenta-Logo-2.png",
+  "file": "logo_alt9.png"
+ },
+ "logo_alt10": {
+  "key": "b024c12b1241",
+  "src": "https://novumsol.ro/wp-content/uploads/2026/03/UPL-Logo.png",
+  "file": "logo_alt10.png"
+ },
+ "logo_alt11": {
+  "key": "376682a94502",
+  "src": "https://novumsol.ro/wp-content/plugins/gdpr-cookie-compliance/dist/images/gdpr-logo.png",
+  "file": "logo_alt11.jpg"
+ },
+ "logo_alt12": {
   "key": "f2227bdd70a2",
   "src": "https://novumsol.ro/wp-content/uploads/2025/11/favicon.png",
-  "file": "logo.png"
+  "file": "logo_alt12.png"
  }
 }
