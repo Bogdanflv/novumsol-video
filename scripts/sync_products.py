@@ -43,6 +43,14 @@ def save_image(url, dest_noext, manifest):
     if old and old['key'] == key and os.path.exists(os.path.join(DATA, old['file'])):
         return old['file']
     raw, _ = get(url)
+    if url.lower().split('?')[0].endswith('.svg'):
+        rel = f'{dest_noext}.svg'
+        for e in ('png', 'jpg'):
+            if os.path.exists(os.path.join(DATA, f'{dest_noext}.{e}')):
+                os.remove(os.path.join(DATA, f'{dest_noext}.{e}'))
+        open(os.path.join(DATA, rel), 'wb').write(raw)
+        manifest[dest_noext] = {'key': key, 'src': url, 'file': rel}
+        return rel
     im = Image.open(io.BytesIO(raw))
     im.load()
     alpha = im.mode in ('RGBA', 'LA', 'P') and 'transparency' in im.info or im.mode in ('RGBA', 'LA')
@@ -50,7 +58,7 @@ def save_image(url, dest_noext, manifest):
     im.thumbnail((MAXPX, MAXPX), Image.LANCZOS)
     ext = 'png' if alpha else 'jpg'
     rel = f'{dest_noext}.{ext}'
-    for e in ('png', 'jpg'):
+    for e in ('png', 'jpg', 'svg'):
         p = os.path.join(DATA, f'{dest_noext}.{e}')
         if e != ext and os.path.exists(p):
             os.remove(p)
@@ -68,6 +76,9 @@ def find_logo():
     page, _ = get(SITE + '/')
     page = page.decode('utf-8', 'ignore')
     cands = []
+    # 1) orice imagine al cărei fișier conține „logo” (SVG întâi), 2) custom-logo, 3) favicon
+    srcs = re.findall(r'(?:src|href)="([^"]*?logo[^"]*?\.(?:svg|png|webp|jpe?g))"', page, re.I)
+    cands += sorted(dict.fromkeys(srcs), key=lambda u: (not u.lower().endswith('.svg'), 'favicon' in u.lower()))
     for pat in (r'<img[^>]+class="[^"]*custom-logo[^"]*"[^>]*>', r'<img[^>]+(?:alt|class|id)="[^"]*logo[^"]*"[^>]*>'):
         for tag in re.findall(pat, page, re.I):
             m = re.search(r'(?:data-src|src)="([^"]+)"', tag)
