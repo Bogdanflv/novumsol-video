@@ -3,15 +3,37 @@
   "chip": "Erbicidare de toamnă",
   "intro": {
     "kicker": "GRÂU · ORZ · RAPIȚĂ",
-    "title": ["Erbicidarea", "de toamnă"],
+    "title": [
+      "Erbicidarea",
+      "de toamnă"
+    ],
     "sub": "Buruienile răsar odată cu cultura",
     "pill": "3 erbicide la preț redus"
   },
   "products": [
-    {"id": 8133, "title": "TRINITY SC", "maker": "ADAMA", "line": "Cereale păioase de toamnă · postemergent · 5 L"},
-    {"id": 4979, "title": "KINARA", "maker": "UPL", "line": "Grâu, orz, secară, triticale · 5 L"},
-    {"id": 7232, "title": "LABRADOR EXTRA", "maker": "QEMETICA", "line": "Graminicid pentru rapița de toamnă · 5 L"}
+    {
+      "id": 8133,
+      "title": "TRINITY SC",
+      "maker": "ADAMA",
+      "line": "Cereale păioase de toamnă · postemergent · 5 L"
+    },
+    {
+      "id": 4979,
+      "title": "KINARA",
+      "maker": "UPL",
+      "line": "Grâu, orz, secară, triticale · 5 L"
+    },
+    {
+      "id": 7224,
+      "title": "LABRADOR EXTRA",
+      "maker": "QEMETICA",
+      "line": "Graminicid pentru rapița de toamnă · 10 L"
+    }
   ],
-  "outro": {"slogan": "Protecție și productivitate", "cta": "Comandă acum", "line": "contact@novumsol.ro · Arad"},
+  "outro": {
+    "slogan": "Protecție și productivitate",
+    "cta": "Comandă acum",
+    "line": "contact@novumsol.ro · Arad"
+  },
   "pesticide": true
 }

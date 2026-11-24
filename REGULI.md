@@ -24,6 +24,8 @@ Dacă o regulă nu poate fi respectată, clipul NU se face – se raportează mo
 - **Fără doze, culturi, efecte sau promisiuni inventate.** Dacă nu e în sursă, nu apare.
 - **Prețurile se iau din `data/products.json` în ziua clipului** (sincronizat zilnic). Nu se folosesc prețuri vechi.
 - Promoția se afișează doar dacă produsul e `on_sale` în ziua clipului.
+- **STOCUL REAL se verifică în aplicația Control Novum Sol (Nexus)**, nu pe site: produsul intră în clip doar dacă are stoc liber > 0 în MICRO sau DEP. DIVA SOL, în ziua clipului. Site-ul poate arăta „în stoc” la produse care nu mai există fizic.
+- Cantitățile din stoc NU se publică și NU se urcă în acest proiect (e public). În `surse.md` se notează doar „în stoc, verificat <data>”.
 
 ## 5. Pesticide (Reg. UE 1107/2009, art. 66)
 - Pe ORICE clip care conține un produs de protecția plantelor (fungicid, insecticid, erbicid, tratament sămânță etc.) apare, lizibil, pe tot parcursul scenelor cu produsul și în final:

@@ -44,6 +44,41 @@ def trimmed(src, folder):
     return 'file://' + out
 
 
+def _norm(t):
+    import unicodedata
+    t = unicodedata.normalize('NFKD', str(t)).encode('ascii', 'ignore').decode().lower()
+    t = re.sub(r'(\d+)[\s,.]*(litri|litru|l)\b', r'\1l', t)
+    t = re.sub(r'(\d+)[\s]*(grame|gr|g)\b', r'\1g', t)
+    t = re.sub(r'(\d+)[\s]*(kg)\b', r'\1kg', t)
+    return re.findall(r'[a-z0-9]+', t)
+
+
+def check_stock(prods, specs, stock_path):
+    """Stocul real vine din aplicația Control Novum Sol (Nexus): data/nexus_stock_history.json.
+    Produsul intră în clip doar dacă are stoc liber > 0 în MICRO sau DIVA. Statusul de pe site NU contează."""
+    snap = json.load(open(stock_path))
+    items = snap['items']
+    report = []
+    for p, spec in zip(prods, specs):
+        if spec.get('nexus'):
+            cands = [i for i in items if i['product'].strip().lower() == spec['nexus'].strip().lower()]
+        else:
+            title = [w for w in _norm(spec.get('title') or p['name']) if not w.isdigit()]
+            pack = [w for w in _norm(p['name']) if re.fullmatch(r'\d+(l|g|kg|ml)', w)]
+            cands = [i for i in items if all(w in _norm(i['product']) for w in title[:2])
+                     and (not pack or pack[0] in _norm(i['product']))]
+        if len(cands) != 1:
+            fail(f"stoc Nexus: {len(cands)} potriviri pentru „{p['name']}” "
+                 f"({[c['product'] for c in cands][:5]}) – adaugă \"nexus\": \"<nume exact>\" în clip.json")
+        c = cands[0]
+        free = (c.get('micro_free') or 0) + (c.get('diva_free') or 0)
+        if free <= 0:
+            fail(f"„{p['name']}” NU e în stoc în Nexus ({c['product']}: {c['status']}). Alege alt produs.")
+        report.append(f"{p['name']} → Nexus „{c['product']}”: în stoc")
+        print('stoc OK', c['product'])
+    return snap.get('updated_at'), report
+
+
 def load(folder):
     clip = json.load(open(os.path.join(folder, 'clip.json')))
     db = json.load(open(os.path.join(DATA, 'products.json')))
@@ -70,12 +105,17 @@ def load(folder):
     for w in legal['interzis']:
         if w in blob:
             fail(f'cuvânt interzis: „{w}”')
+    stock_path = os.environ.get('NEXUS_STOCK') or os.path.join(folder, '_work', 'nexus_stock_history.json')
+    if not os.path.exists(stock_path):
+        fail('lipsește stocul din aplicație (nexus_stock_history.json). Copiază-l de pe calculator în ' + stock_path)
+    stock_time, stock_report = check_stock(prods, clip['products'], stock_path)
     data = {
         'logo': 'file://' + os.path.join(DATA, logo), 'chip': clip.get('chip', ''),
         'intro': clip['intro'], 'outro': clip['outro'], 'products': prods,
         'legal': legal['art66_ro'] if clip.get('pesticide', True) else None,
         'timing': {'intro': T_INTRO, 'prod': T_PROD, 'outro': T_OUTRO},
     }
+    data['_stock'] = (stock_time, stock_report)
     return clip, data, db['synced']
 
 
@@ -91,7 +131,7 @@ def main():
     os.makedirs(work, exist_ok=True)
     html = open(os.path.join(ENGINE, 'template.html')).read()
     open(os.path.join(work, 'index.html'), 'w').write(html)
-    open(os.path.join(work, 'clip_data.js'), 'w').write('window.CLIP=' + json.dumps(data, ensure_ascii=False) + ';')
+    open(os.path.join(work, 'clip_data.js'), 'w').write('window.CLIP=' + json.dumps({k: v for k, v in data.items() if k != '_stock'}, ensure_ascii=False) + ';')
     sc = scenes(data)
     from playwright.sync_api import sync_playwright
     with sync_playwright() as p:
@@ -135,6 +175,9 @@ def main():
         f.write(f'# Surse\n\nPrețuri din data/products.json, sincronizat {synced}.\n\n')
         for x in data['products']:
             f.write(f"- {x['name']} – {x['price']} lei" + (f" (preț vechi {x['regular_price']} lei)" if x['on_sale'] else '') + f" – {x['url']}\n")
+        f.write(f"\nStoc verificat în aplicația Control Novum Sol (Nexus), actualizat {data['_stock'][0]}:\n")
+        for line in data['_stock'][1]:
+            f.write(f'- {line}\n')
         if data['legal']:
             f.write(f"\nFraza art. 66: „{data['legal']}”\n")
     print('GATA', os.path.join(folder, 'clip.mp4'), f'{total:.1f}s')
